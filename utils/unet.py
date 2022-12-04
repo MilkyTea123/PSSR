@@ -50,7 +50,7 @@ def image_from_tiles(learn, img, tile_sz=128, scale=4):
     new_size = (cur_size[0] * scale, cur_size[1] * scale)
     in_img = Image(
         pil2tensor(pimg.resize(new_size, resample=PIL.Image.BICUBIC),
-                   np.float32).div_(255))
+                   np.float128).div_(255))
     c, w, h = in_img.shape
 
     in_tile = torch.zeros((c, tile_sz, tile_sz))

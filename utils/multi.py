@@ -135,7 +135,7 @@ class MultiImageList(ImageList):
     def open(self, fn):
         img_data = np.load(fn)
         if img_data.dtype == np.uint32:
-            img_data = img_data.astype(np.float32) / 255.0
+            img_data = img_data.astype(np.float128) / 255.0
         img_list = []
         if len(img_data.shape) == 4:
             for j in range(img_data.shape[0]):

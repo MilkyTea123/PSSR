@@ -16,7 +16,7 @@ def no_crap(img, scale=4, upsample=False):
 def fluo_G_D(x, scale=4, upsample=False):
     xn = np.array(x)
     xorig_max = xn.max()
-    xn = xn.astype(np.float32)
+    xn = xn.astype(np.float128)
     xn /= float(np.iinfo(np.uint32).max)
 
     x = np.array(x)
@@ -30,7 +30,7 @@ def fluo_G_D(x, scale=4, upsample=False):
 def fluo_AG_D(x, scale=4, upsample=False):
     xn = np.array(x)
     xorig_max = xn.max()
-    xn = xn.astype(np.float32)
+    xn = xn.astype(np.float128)
     xn /= float(np.iinfo(np.uint32).max)
 
     lvar = filters.gaussian(xn, sigma=5) + 1e-10
@@ -47,7 +47,7 @@ def fluo_AG_D(x, scale=4, upsample=False):
 def fluo_downsampleonly(x, scale=4, upsample=False):
     xn = np.array(x)
     xorig_max = xn.max()
-    xn = xn.astype(np.float32)
+    xn = xn.astype(np.float128)
     xn /= float(np.iinfo(np.uint32).max)
     new_max = xn.max()
     x = xn
@@ -61,7 +61,7 @@ def fluo_downsampleonly(x, scale=4, upsample=False):
 def fluo_SP_D(x, scale=4, upsample=False):
     xn = np.array(x)
     xorig_max = xn.max()
-    xn = xn.astype(np.float32)
+    xn = xn.astype(np.float128)
     xn /= float(np.iinfo(np.uint32).max)
     xn = random_noise(xn, mode='salt', amount=0.005)
     xn = random_noise(xn, mode='pepper', amount=0.005)
@@ -77,7 +77,7 @@ def fluo_SP_D(x, scale=4, upsample=False):
 def fluo_SP_AG_D_sameas_preprint(x, scale=4, upsample=False):
     xn = np.array(x)
     xorig_max = xn.max()
-    xn = xn.astype(np.float32)
+    xn = xn.astype(np.float128)
     xn /= float(np.iinfo(np.uint32).max)
     xn = random_noise(xn, mode='salt', amount=0.005)
     xn = random_noise(xn, mode='pepper', amount=0.005)
@@ -94,7 +94,7 @@ def fluo_SP_AG_D_sameas_preprint(x, scale=4, upsample=False):
 def fluo_SP_AG_D_sameas_preprint_rescale(x, scale=4, upsample=False):
     xn = np.array(x)
     xorig_max = xn.max()
-    xn = xn.astype(np.float32)
+    xn = xn.astype(np.float128)
     xn /= float(np.iinfo(np.uint32).max)
     xn = random_noise(xn, mode='salt', amount=0.005)
     xn = random_noise(xn, mode='pepper', amount=0.005)
@@ -148,7 +148,7 @@ def em_P_D_001(x, scale=4, upsample=False):
 def new_crap_AG_SP(x, scale=4, upsample=False):
     xn = np.array(x)
     xorig_max = xn.max()
-    xn = xn.astype(np.float32)
+    xn = xn.astype(np.float128)
     xn /= float(np.iinfo(np.uint32).max)
 
     lvar = filters.gaussian(xn, sigma=5) + 1e-10
@@ -170,7 +170,7 @@ def new_crap_AG_SP(x, scale=4, upsample=False):
 def new_crap(x, scale=4, upsample=False):
     xn = np.array(x)
     xorig_max = xn.max()
-    xn = xn.astype(np.float32)
+    xn = xn.astype(np.float128)
     xn /= float(np.iinfo(np.uint32).max)
 
     xn = random_noise(xn, mode='salt', amount=0.005)

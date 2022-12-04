@@ -61,9 +61,9 @@ def norm_minmse(gt, x, normalize_gt=True):
 
     """
     if normalize_gt:
-        gt = normalize(gt, 0.1, 99.9, clip=False).astype(np.float32, copy = False)
-    x = x.astype(np.float32, copy=False) - np.mean(x)
-    gt = gt.astype(np.float32, copy=False) - np.mean(gt)
+        gt = normalize(gt, 0.1, 99.9, clip=False).astype(np.float128, copy = False)
+    x = x.astype(np.float128, copy=False) - np.mean(x)
+    gt = gt.astype(np.float128, copy=False) - np.mean(gt)
     scale = np.cov(x.flatten(), gt.flatten())[0, 1] / np.var(x.flatten())
     return gt, scale * x
 
@@ -120,9 +120,9 @@ def stack_process(pred, bilinear, gt, offset_frames=0):
         stack_bilinear.seek(i) if frames == 1 else stack_bilinear.seek(i+offset_frames)
         stack_gt.seek(i) if frames == 1 else stack_gt.seek(i+offset_frames)
 
-        x1 = np.array(stack_pred).astype(np.float32)
-        x2 = np.array(stack_bilinear).astype(np.float32)
-        y = np.array(stack_gt).astype(np.float32)
+        x1 = np.array(stack_pred).astype(np.float128)
+        x2 = np.array(stack_bilinear).astype(np.float128)
+        y = np.array(stack_gt).astype(np.float128)
         psnr, ssim, l_psnr, l_ssim, y_norm1, x1_norm, y_norm2, x2_norm = slice_process(x1, x2, y)
 
         stack_psnr.append(psnr)
@@ -139,10 +139,10 @@ def stack_process(pred, bilinear, gt, offset_frames=0):
         #x2_norms.append(np.array(x2_norm).copy())
 
 
-    #tifffile.imsave(str(exp_dir/f"{stem}_GTnormtopred.tif"), np.stack(y_norm1s).astype(np.float32))
-    #tifffile.imsave(str(exp_dir/f"{stem}_prednorm.tif"), np.stack(x1_norms).astype(np.float32))
-    #tifffile.imsave(str(exp_dir/f"{stem}_GTnormtobilinear.tif"), np.stack(y_norm2s).astype(np.float32))
-    #tifffile.imsave(str(exp_dir/f"{stem}_bilinearnorm.tif"), np.stack(x2_norms).astype(np.float32))
+    #tifffile.imsave(str(exp_dir/f"{stem}_GTnormtopred.tif"), np.stack(y_norm1s).astype(np.float128))
+    #tifffile.imsave(str(exp_dir/f"{stem}_prednorm.tif"), np.stack(x1_norms).astype(np.float128))
+    #tifffile.imsave(str(exp_dir/f"{stem}_GTnormtobilinear.tif"), np.stack(y_norm2s).astype(np.float128))
+    #tifffile.imsave(str(exp_dir/f"{stem}_bilinearnorm.tif"), np.stack(x2_norms).astype(np.float128))
     return pred_slice_name,bilinear_slice_name,gt_slice_name,stack_psnr,stack_ssim,stack_lpsnr,stack_lssim
 
 def metric_gen(predset, testset, stats_dir, offset_frames):

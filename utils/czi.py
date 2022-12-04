@@ -98,7 +98,7 @@ class CziImageList(ImageList):
                                'X':slice(0,x), 'Y':slice(0,y)})
             with czifile.CziFile(fn) as czi_f:
                 data = czi_f.asarray()
-                img_data = data[idx].astype(np.float32).copy()
+                img_data = data[idx].astype(np.float128).copy()
                 img_max = img_data.max()
                 if img_max != 0: img_data /= img_max * 0.9
         else:
@@ -107,7 +107,7 @@ class CziImageList(ImageList):
             img.seek(n_frame)
             img.load()
 
-            img_data = np.array(img).copy().astype(np.float32)
+            img_data = np.array(img).copy().astype(np.float128)
             img_max = img_data.max()
             if img_max != 0: img_data /= img_max * 0.9
 
