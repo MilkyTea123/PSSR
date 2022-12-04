@@ -81,7 +81,7 @@ def process_tif(fn, processor, proc_func, out_fn, baseline_dir, n_depth=1, n_tim
             time_slice = slice(t-offset_frames, t+offset_frames+1)
             img = data[time_slice].copy()
             pred_img = proc_func(img, img_info=img_info, mode=mode)
-            pred_img8 = (pred_img * np.iinfo(np.uint8).max).astype(np.uint8)
+            pred_img8 = (pred_img * np.iinfo(np.uint32).max).astype(np.uint32)
             img_tiffs.append(pred_img8[None])
 
         imgs = np.concatenate(img_tiffs)
@@ -133,7 +133,7 @@ def process_czi(fn, processor, proc_func, out_fn, baseline_dir, n_depth=1, n_tim
                         save_name = f'{proc_name}_{item.stem}_{tag}'
 
                         pred_img = proc_func(img, img_info=img_info, mode=mode)
-                        pred_img8 = (pred_img * np.iinfo(np.uint8).max).astype(np.uint8)
+                        pred_img8 = (pred_img * np.iinfo(np.uint32).max).astype(np.uint32)
                         PIL.Image.fromarray(pred_img8).save(out_fn)
         elif n_time > 1:
             offset_frames = n_time // 2
@@ -153,7 +153,7 @@ def process_czi(fn, processor, proc_func, out_fn, baseline_dir, n_depth=1, n_tim
                         })
                         img = data[idx].copy()
                         pred_img = proc_func(img, img_info=img_info, mode=mode)
-                        pred_img8 = (pred_img * np.iinfo(np.uint8).max).astype(np.uint8)
+                        pred_img8 = (pred_img * np.iinfo(np.uint32).max).astype(np.uint32)
                         imgs.append(pred_img8[None])
 
                     all_y = np.concatenate(imgs)
@@ -187,7 +187,7 @@ def process_czi(fn, processor, proc_func, out_fn, baseline_dir, n_depth=1, n_tim
                         })
                         img = data[idx].copy()
                         pred_img = proc_func(img, img_info=img_info, mode=mode)
-                        pred_img8 = (pred_img * np.iinfo(np.uint8).max).astype(np.uint8)
+                        pred_img8 = (pred_img * np.iinfo(np.uint32).max).astype(np.uint32)
                         imgs.append(pred_img8[None])
             all_y = np.concatenate(imgs)
             if processor!='bilinear':

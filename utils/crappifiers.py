@@ -10,14 +10,14 @@ def no_crap(img, scale=4, upsample=False):
     x = np.array(img)
     multichannel = len(x.shape) > 2
     x = rescale(x, scale=1/scale, order=1, multichannel=multichannel)
-    x *= np.iinfo(np.uint8).max
-    return PIL.Image.fromarray(x.astype(np.uint8))
+    x *= np.iinfo(np.uint32).max
+    return PIL.Image.fromarray(x.astype(np.uint32))
 
 def fluo_G_D(x, scale=4, upsample=False):
     xn = np.array(x)
     xorig_max = xn.max()
     xn = xn.astype(np.float32)
-    xn /= float(np.iinfo(np.uint8).max)
+    xn /= float(np.iinfo(np.uint32).max)
 
     x = np.array(x)
     mu, sigma = 0, 5
@@ -25,13 +25,13 @@ def fluo_G_D(x, scale=4, upsample=False):
     x = np.clip(x + noise, 0, 1)
     x_down = npzoom(x, 1/scale, order=1)
     #x_up = npzoom(x_down, scale, order=1)
-    return PIL.Image.fromarray(x_down.astype(np.uint8))
+    return PIL.Image.fromarray(x_down.astype(np.uint32))
 
 def fluo_AG_D(x, scale=4, upsample=False):
     xn = np.array(x)
     xorig_max = xn.max()
     xn = xn.astype(np.float32)
-    xn /= float(np.iinfo(np.uint8).max)
+    xn /= float(np.iinfo(np.uint32).max)
 
     lvar = filters.gaussian(xn, sigma=5) + 1e-10
     xn = random_noise(xn, mode='localvar', local_vars=lvar*0.5)
@@ -42,13 +42,13 @@ def fluo_AG_D(x, scale=4, upsample=False):
     xn *= xorig_max
     x_down = npzoom(x, 1/scale, order=1)
     #x_up = npzoom(x_down, scale, order=1)
-    return PIL.Image.fromarray(x_down.astype(np.uint8))
+    return PIL.Image.fromarray(x_down.astype(np.uint32))
 
 def fluo_downsampleonly(x, scale=4, upsample=False):
     xn = np.array(x)
     xorig_max = xn.max()
     xn = xn.astype(np.float32)
-    xn /= float(np.iinfo(np.uint8).max)
+    xn /= float(np.iinfo(np.uint32).max)
     new_max = xn.max()
     x = xn
     if new_max > 0:
@@ -56,13 +56,13 @@ def fluo_downsampleonly(x, scale=4, upsample=False):
     xn *= xorig_max
     x_down = npzoom(x, 1/scale, order=1)
     #x_up = npzoom(x_down, scale, order=1)
-    return PIL.Image.fromarray(x_down.astype(np.uint8))
+    return PIL.Image.fromarray(x_down.astype(np.uint32))
 
 def fluo_SP_D(x, scale=4, upsample=False):
     xn = np.array(x)
     xorig_max = xn.max()
     xn = xn.astype(np.float32)
-    xn /= float(np.iinfo(np.uint8).max)
+    xn /= float(np.iinfo(np.uint32).max)
     xn = random_noise(xn, mode='salt', amount=0.005)
     xn = random_noise(xn, mode='pepper', amount=0.005)
     new_max = xn.max()
@@ -72,13 +72,13 @@ def fluo_SP_D(x, scale=4, upsample=False):
     xn *= xorig_max
     x_down = npzoom(x, 1/scale, order=1)
     #x_up = npzoom(x_down, scale, order=1)
-    return PIL.Image.fromarray(x_down.astype(np.uint8))
+    return PIL.Image.fromarray(x_down.astype(np.uint32))
 
 def fluo_SP_AG_D_sameas_preprint(x, scale=4, upsample=False):
     xn = np.array(x)
     xorig_max = xn.max()
     xn = xn.astype(np.float32)
-    xn /= float(np.iinfo(np.uint8).max)
+    xn /= float(np.iinfo(np.uint32).max)
     xn = random_noise(xn, mode='salt', amount=0.005)
     xn = random_noise(xn, mode='pepper', amount=0.005)
     lvar = filters.gaussian(xn, sigma=5) + 1e-10
@@ -89,13 +89,13 @@ def fluo_SP_AG_D_sameas_preprint(x, scale=4, upsample=False):
         xn /= new_max
     xn *= xorig_max
     x_down = npzoom(x, 1/scale, order=1)
-    return PIL.Image.fromarray(x_down.astype(np.uint8))
+    return PIL.Image.fromarray(x_down.astype(np.uint32))
 
 def fluo_SP_AG_D_sameas_preprint_rescale(x, scale=4, upsample=False):
     xn = np.array(x)
     xorig_max = xn.max()
     xn = xn.astype(np.float32)
-    xn /= float(np.iinfo(np.uint8).max)
+    xn /= float(np.iinfo(np.uint32).max)
     xn = random_noise(xn, mode='salt', amount=0.005)
     xn = random_noise(xn, mode='pepper', amount=0.005)
     lvar = filters.gaussian(xn, sigma=5) + 1e-10
@@ -107,7 +107,7 @@ def fluo_SP_AG_D_sameas_preprint_rescale(x, scale=4, upsample=False):
     xn *= xorig_max
     multichannel = len(x.shape) > 2
     x_down = rescale(x, scale=1/scale, order=1, multichannel=multichannel)
-    return PIL.Image.fromarray(x_down.astype(np.uint8))
+    return PIL.Image.fromarray(x_down.astype(np.uint32))
 
 def em_AG_D_sameas_preprint(x, scale=4, upsample=False):
     lvar = filters.gaussian(x, sigma=3)
@@ -149,7 +149,7 @@ def new_crap_AG_SP(x, scale=4, upsample=False):
     xn = np.array(x)
     xorig_max = xn.max()
     xn = xn.astype(np.float32)
-    xn /= float(np.iinfo(np.uint8).max)
+    xn /= float(np.iinfo(np.uint32).max)
 
     lvar = filters.gaussian(xn, sigma=5) + 1e-10
     xn = random_noise(xn, mode='localvar', local_vars=lvar*0.5)
@@ -165,13 +165,13 @@ def new_crap_AG_SP(x, scale=4, upsample=False):
     multichannel = len(x.shape) > 2
 
     xn = rescale(xn, scale=1/scale, order=1, multichannel=multichannel)
-    return PIL.Image.fromarray(xn.astype(np.uint8))
+    return PIL.Image.fromarray(xn.astype(np.uint32))
 
 def new_crap(x, scale=4, upsample=False):
     xn = np.array(x)
     xorig_max = xn.max()
     xn = xn.astype(np.float32)
-    xn /= float(np.iinfo(np.uint8).max)
+    xn /= float(np.iinfo(np.uint32).max)
 
     xn = random_noise(xn, mode='salt', amount=0.005)
     xn = random_noise(xn, mode='pepper', amount=0.005)
@@ -184,7 +184,7 @@ def new_crap(x, scale=4, upsample=False):
     xn *= xorig_max
     multichannel = len(x.shape) > 2
     x = rescale(x, scale=1/scale, order=1, multichannel=multichannel)
-    return PIL.Image.fromarray(x.astype(np.uint8))
+    return PIL.Image.fromarray(x.astype(np.uint32))
 
 ###not sure about this one
 def em_AG_P_D_001(x, scale=4, upsample=False):

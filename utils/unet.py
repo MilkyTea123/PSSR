@@ -44,7 +44,7 @@ def wnres_unet_learner(data, arch, in_c=1, out_c=1, wnres_args=None, bilinear_up
     return learn
 
 def image_from_tiles(learn, img, tile_sz=128, scale=4):
-    pimg = PIL.Image.fromarray((img * 255).astype(np.uint8),
+    pimg = PIL.Image.fromarray((img * 255).astype(np.uint32),
                                mode='L').convert('RGB')
     cur_size = pimg.size
     new_size = (cur_size[0] * scale, cur_size[1] * scale)

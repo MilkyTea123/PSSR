@@ -197,7 +197,7 @@ def save_img(fn, img):
         PIL.Image.fromarray(img_as_ubyte(img), mode='L').save(f'{fn}.tif')
         np.warnings.filterwarnings('default')
     else:
-        img8 = (img * 255.).astype(np.uint8)
+        img8 = (img * 255.).astype(np.uint32)
         np.save(fn.with_suffix('.npy'), img8, allow_pickle=False)
 
 

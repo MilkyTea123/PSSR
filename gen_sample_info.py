@@ -92,7 +92,7 @@ Returns:
              X and Y larger than 1, which can be Z or T, in other words, if the
              source file of this slice is a z-stack or a time-lapse.
   - 'ftype': str, source file type, 'tif' or 'czi'.
-  - 'uint8': boolean, 'TRUE' or 'FALSE'. It is 'TRUE' if the source file of this
+  - 'uint32': boolean, 'TRUE' or 'FALSE'. It is 'TRUE' if the source file of this
              frame is 8-bit unsigned interger, otherwise 'FALSE'.
   - 'mean': float, mean value of the frame.
   - 'sd': float, standard deviation of the frame.
@@ -230,10 +230,10 @@ def process_czi(item, category, mode):
                         })
                     img = data[idx]
                     mi, ma = np.percentile(img, [2,99.99])
-                    if dtype == np.uint8: rmax = 255.
+                    if dtype == np.uint32: rmax = 255.
                     else: rmax = img.max()
                     tif_srcs.append({'fn': item, 'ftype': 'czi', 'multi':int(is_multi), 'category': category, 'dsplit': mode,
-                                     'uint8': dtype == np.uint8, 'mi': mi, 'ma': ma, 'rmax': rmax,
+                                     'uint32': dtype == np.uint32, 'mi': mi, 'ma': ma, 'rmax': rmax,
                                      'all_rmax': all_rmax, 'all_mi': all_mi, 'all_ma': all_ma,
                                      'mean': img.mean(), 'sd': img.std(),
                                      'nc': channels, 'nz': depths, 'nt': times,
@@ -266,7 +266,7 @@ def process_tif(item, category, mode):
         img_data = data[n]
         dtype = img_data.dtype
         mi, ma = np.percentile(img_data, [2,99.99])
-        if dtype == np.uint8: rmax = 255.
+        if dtype == np.uint32: rmax = 255.
         else: rmax = img_data.max()
         if is_live(item):
             t, z = n, 0
@@ -276,7 +276,7 @@ def process_tif(item, category, mode):
             nt, nz = 1, n_frames
 
         tif_srcs.append({'fn': item, 'ftype': 'tif', 'multi':int(is_multi), 'category': category, 'dsplit': mode,
-                         'uint8': dtype==np.uint8, 'mi': mi, 'ma': ma, 'rmax': rmax,
+                         'uint32': dtype==np.uint32, 'mi': mi, 'ma': ma, 'rmax': rmax,
                          'all_rmax': all_rmax, 'all_mi': all_mi, 'all_ma': all_ma,
                          'mean': img_data.mean(), 'sd': img_data.std(),
                          'nc': 1, 'nz': nz, 'nt': nt,
@@ -341,4 +341,4 @@ def main(out: Param("tif output name", Path, required=True),
         tif_srcs += build_tifs(src, mbar=mbar)
 
     tif_src_df = pd.DataFrame(tif_srcs)
-    tif_src_df[['category','dsplit','multi','ftype','uint8','mean','sd','all_rmax','all_mi','all_ma','mi','ma','rmax','nc','nz','nt','c','z','t','x','y','fn']].to_csv(out, header=True, index=False)
+    tif_src_df[['category','dsplit','multi','ftype','uint32','mean','sd','all_rmax','all_mi','all_ma','mi','ma','rmax','nc','nz','nt','c','z','t','x','y','fn']].to_csv(out, header=True, index=False)

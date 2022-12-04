@@ -24,7 +24,7 @@ from torchvision.models import vgg16_bn
 __all__ = ['generate_movies', 'generate_tifs', 'ensure_folder', 'subfolders',
            'build_tile_info', 'generate_tiles', 'unet_image_from_tiles_blend',
            'get_xy_transforms', 'get_feat_loss', 'unet_image_from_tiles_partialsave',
-           'draw_random_tile', 'img_to_float', 'img_to_uint8']
+           'draw_random_tile', 'img_to_float', 'img_to_uint32']
 
 
 def gram_matrix(x):
@@ -146,7 +146,7 @@ def make_mask(shape, overlap, top=True, left=True, right=True, bottom=True):
                 if bottom: mask[h-i-1,j] = min((i+1)/overlap, mask[h-i-1,j])
                 if left: mask[i,j] = min((j+1)/overlap, mask[i,j])
                 if right: mask[i,w-j-1] = min((j+1)/overlap, mask[i,w-j-1])
-    return mask.astype(np.uint8)
+    return mask.astype(np.uint32)
 
 def unet_image_from_tiles_partialsave(learn, in_img, tile_sz=(256, 256), scale=(4, 4), overlap_pct=(0.50, 0.50), img_info=None):
     """
@@ -449,16 +449,16 @@ def tif_predict_movie(learn,
                                               img,
                                               tile_sz=size,
                                               wsize=wsize)
-        pred = (out_img * 255).cpu().numpy().astype(np.uint8)
+        pred = (out_img * 255).cpu().numpy().astype(np.uint32)
         preds.append(pred)
-        orig = (img[1][None] * 255).astype(np.uint8)
+        orig = (img[1][None] * 255).astype(np.uint32)
         origs.append(orig)
     if len(preds) > 0:
-        all_y = img_to_uint8(np.concatenate(preds))
+        all_y = img_to_uint32(np.concatenate(preds))
         imageio.mimwrite(
             pred_out, all_y,
             bigtiff=True)  #, fps=30, macro_block_size=None) # for mp4
-        all_y = img_to_uint8(np.concatenate(origs))
+        all_y = img_to_uint32(np.concatenate(origs))
         imageio.mimwrite(orig_out, all_y,
                          bigtiff=True)  #, fps=30, macro_block_size=None)
 
@@ -508,19 +508,19 @@ def czi_predict_movie(learn,
                                                   img,
                                                   tile_sz=size,
                                                   wsize=wsize)
-            pred = (out_img * 255).cpu().numpy().astype(np.uint8)
+            pred = (out_img * 255).cpu().numpy().astype(np.uint32)
             preds.append(pred)
             #imsave(folder/f'{t}.tif', pred[0])
 
-            orig = (img[wsize // 2][None] * 255).astype(np.uint8)
+            orig = (img[wsize // 2][None] * 255).astype(np.uint32)
             origs.append(orig)
         if len(preds) > 0:
-            all_y = img_to_uint8(np.concatenate(preds))
+            all_y = img_to_uint32(np.concatenate(preds))
             imageio.mimwrite(
                 pred_out, all_y,
                 bigtiff=True)  #, fps=30, macro_block_size=None) # for mp4
 
-            all_y = img_to_uint8(np.concatenate(origs))
+            all_y = img_to_uint32(np.concatenate(origs))
             imageio.mimwrite(orig_out, all_y,
                              bigtiff=True)  #, fps=30, macro_block_size=None)
 
@@ -553,16 +553,16 @@ def generate_movies(dest_dir, movie_files, learn, size, wsize=5):
 
 
 def max_to_use(img):
-    return np.iinfo(np.uint8).max if img.dtype == np.uint8 else img.max()
+    return np.iinfo(np.uint32).max if img.dtype == np.uint32 else img.max()
 
 
-def img_to_uint8(img, img_info=None):
+def img_to_uint32(img, img_info=None):
     img = img.copy()
-    if img_info and img_info['dtype'] != np.uint8:
+    if img_info and img_info['dtype'] != np.uint32:
         img -= img.min()
         img /= img.max()
-        img *= np.iinfo(np.uint8).max
-    return img.astype(np.uint8)
+        img *= np.iinfo(np.uint32).max
+    return img.astype(np.uint32)
 
 def img_to_float(img):
     dtype = img.dtype
@@ -612,7 +612,7 @@ def tif_predict_images(learn,
         img = img.copy()
 
     if len(preds) > 0:
-        all_y = img_to_uint8(np.concatenate(preds))
+        all_y = img_to_uint32(np.concatenate(preds))
         imageio.mimwrite(pred_out, all_y, bigtiff=True)
         shutil.copy(tif_in, orig_out)
 
@@ -679,9 +679,9 @@ def czi_predict_images(learn,
                         origs.append(img[None])
 
                     if len(preds) > 0:
-                        all_y = img_to_uint8(np.concatenate(preds))
+                        all_y = img_to_uint32(np.concatenate(preds))
                         imageio.mimwrite(pred_out, all_y, bigtiff=True)
-                        all_y = img_to_uint8(np.concatenate(origs))
+                        all_y = img_to_uint32(np.concatenate(origs))
                         imageio.mimwrite(orig_out, all_y, bigtiff=True)
 
 

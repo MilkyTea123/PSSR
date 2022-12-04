@@ -100,8 +100,8 @@ def get_tile_puller(tile_stat, crap_func, t_frames, z_frames):
         img_data = img_data.astype(np.float32)
 
         def czi_get(istat):
-            c,z,t,x,y,mi,ma,is_uint8,rmax,all_rmax,all_ma = [istat[fld] for fld in ['c','z','t','x','y','mi','ma','uint8','rmax','all_rmax','all_ma']]
-            if is_uint8:
+            c,z,t,x,y,mi,ma,is_uint32,rmax,all_rmax,all_ma = [istat[fld] for fld in ['c','z','t','x','y','mi','ma','uint32','rmax','all_rmax','all_ma']]
+            if is_uint32:
                 mi, ma, rmax = 0., 255.0, 255.0
                 all_ma, all_rmax = 255.0, 255.0
 
@@ -125,12 +125,12 @@ def get_tile_puller(tile_stat, crap_func, t_frames, z_frames):
     else:
         pil_img = PIL.Image.open(fn)
         def pil_get(istat):
-            c,z,t,x,y,mi,ma,is_uint8,rmax,all_rmax,all_ma = [istat[fld] for fld in ['c','z','t','x','y','mi','ma','uint8','rmax','all_rmax','all_ma']]
+            c,z,t,x,y,mi,ma,is_uint32,rmax,all_rmax,all_ma = [istat[fld] for fld in ['c','z','t','x','y','mi','ma','uint32','rmax','all_rmax','all_ma']]
             if half_t > 0: n_start, n_end = t-half_t, t+half_t+1
             elif half_z > 0: n_start, n_end = z-half_z, z+half_z+1
             else: n_start, n_end = 0,1
 
-            if is_uint8:
+            if is_uint32:
                 mi, ma, rmax = 0., 255.0, 255.0
                 all_ma, all_rmax = 255.0, 255.0
 
@@ -159,10 +159,10 @@ def get_tile_puller(tile_stat, crap_func, t_frames, z_frames):
         id = istat['index']
         fn = Path(istat['fn'])
         tile_sz = istat['tile_sz']
-        c,z,t,x,y,mi,ma,is_uint8,rmax = [istat[fld] for fld in ['c','z','t','x','y','mi','ma','uint8','rmax']]
+        c,z,t,x,y,mi,ma,is_uint32,rmax = [istat[fld] for fld in ['c','z','t','x','y','mi','ma','uint32','rmax']]
 
         raw_data = img_get(istat)
-        img_data = (np.iinfo(np.uint8).max * raw_data).astype(np.uint8)
+        img_data = (np.iinfo(np.uint32).max * raw_data).astype(np.uint32)
 
         thresh = np.percentile(img_data, 2)
         thresh_pct = (img_data > thresh).mean() * 0.30
