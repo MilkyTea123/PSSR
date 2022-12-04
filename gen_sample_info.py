@@ -181,7 +181,7 @@ Everything in folder 'datasources' are needed. Name output .csv file as 'all.csv
 python gen_sample_info.py --out all.csv datasources
 """
 import yaml
-from fastai.script import *
+from fastai import *
 from fastai.vision import *
 from utils import *
 from pathlib import Path

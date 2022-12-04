@@ -33,7 +33,7 @@ python image_gen.py stats/LR stats/LR-PSSR --models s_1_mito --use_tiles --gpu 0
 
 import sys
 import yaml
-from fastai.script import *
+from fastai import *
 from fastai.vision import *
 from fastai.callbacks import *
 from fastai.distributed import *

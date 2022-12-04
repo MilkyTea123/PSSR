@@ -60,7 +60,7 @@ python tile_from_info.py --out datasets --info live_mitotracker.csv --n_train 50
 """
 
 import yaml
-from fastai.script import *
+from fastai import *
 from fastai.vision import *
 from utils import *
 from utils.crappifiers import *

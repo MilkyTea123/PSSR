@@ -67,7 +67,7 @@ python -m fastai.launch  train.py --bs 8 --lr 4e-4 --size 512 --tile_sz 512 --da
 """
 
 import yaml
-from fastai.script import *
+from fastai import *
 from fastai.vision import *
 from fastai.callbacks import *
 from fastai.distributed import *
