@@ -97,7 +97,7 @@ def get_tile_puller(tile_stat, crap_func, t_frames, z_frames):
         img_f = czifile.CziFile(fn)
         proc_axes, proc_shape = get_czi_shape_info(img_f)
         img_data = img_f.asarray()
-        img_data = img_data.astype(np.float128)
+        img_data = img_data.astype(np.float64)
 
         def czi_get(istat):
             c,z,t,x,y,mi,ma,is_uint32,rmax,all_rmax,all_ma = [istat[fld] for fld in ['c','z','t','x','y','mi','ma','uint32','rmax','all_rmax','all_ma']]
@@ -143,7 +143,7 @@ def get_tile_puller(tile_stat, crap_func, t_frames, z_frames):
                 img_array.append(img.copy())
 
             img = np.stack(img_array)
-            img = img.astype(np.float128)
+            img = img.astype(np.float64)
             img /= all_rmax
             return img
 

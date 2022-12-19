@@ -30,8 +30,8 @@ def micro_crappify(img, gauss_sigma = 1, poisson_loop=10): #data: 1 frame; play 
     x = img * 255.
     for n in range(poisson_loop):
         x = np.random.poisson(np.maximum(0,x).astype(np.int))
-    x = x.astype(np.float128)
-    noise = np.random.normal(0,gauss_sigma,size=x.shape).astype(np.float128)
+    x = x.astype(np.float64)
+    noise = np.random.normal(0,gauss_sigma,size=x.shape).astype(np.float64)
     x = np.maximum(0,x+noise)
     x -= x.min()
     x /= x.max()
@@ -262,7 +262,7 @@ def czi_movie_to_synth(czi_fn,
                     for t in range(times):
                         save_name = f'{channel:02d}_{depth:02d}_{t:06d}_{base_name}'
                         idx = build_index( axes, {'T': t, 'C':channel, 'Z': depth, 'X':slice(0,x), 'Y':slice(0,y)})
-                        img_data = data[idx].astype(np.float128).copy()
+                        img_data = data[idx].astype(np.float64).copy()
                         img_max = img_data.max()
                         if img_max != 0: img_data /= img_max
 
@@ -288,7 +288,7 @@ def czi_movie_to_synth(czi_fn,
                     for time_col in timerange:
                         save_name = f'{channel:02d}_T{time_col:05d}-{(time_col+n_frames-1):05d}_{base_name}'
                         idx = build_index(proc_axes, {'T': slice(time_col,time_col+n_frames), 'C': channel, 'X':slice(0,x),'Y':slice(0,y)})
-                        img_data = data[idx].astype(np.float128).copy()
+                        img_data = data[idx].astype(np.float64).copy()
                         img_max = img_data.max()
                         if img_max != 0: img_data /= img_max
 
@@ -300,15 +300,15 @@ def czi_movie_to_synth(czi_fn,
 
                         for i in range(hr_imgs.shape[0]):
                             hr_img = hr_imgs[i]
-                            crap_img = crappify_func(hr_img).astype(np.float128).copy() if crappify_func else hr_img
-                            lr_img = npzoom(crap_img, 1/scale, order=0).astype(np.float128).copy()
+                            crap_img = crappify_func(hr_img).astype(np.float64).copy() if crappify_func else hr_img
+                            lr_img = npzoom(crap_img, 1/scale, order=0).astype(np.float64).copy()
                             lr_imgs.append(lr_img)
-                            lrup_img = npzoom(lr_img, scale, order=0).astype(np.float128).copy()
+                            lrup_img = npzoom(lr_img, scale, order=0).astype(np.float64).copy()
                             lrup_imgs.append(lrup_img)
 
-                        lr_imgs = np.array(lr_imgs).astype(np.float128).copy()
-                        lrup_imgs = np.array(lrup_imgs).astype(np.float128).copy()
-                        hr_img = hr_imgs[hr_imgs.shape[0]//2].astype(np.float128).copy()
+                        lr_imgs = np.array(lr_imgs).astype(np.float64).copy()
+                        lrup_imgs = np.array(lrup_imgs).astype(np.float64).copy()
+                        hr_img = hr_imgs[hr_imgs.shape[0]//2].astype(np.float64).copy()
                         hr_mt_name, lr_mt_name, lrup_mt_name = [d / save_name for d in [hr_mt_dir, lr_mt_dir, lrup_mt_dir]]
                         np.save(hr_mt_name, hr_img)
                         np.save(lr_mt_name, lr_imgs)
@@ -328,7 +328,7 @@ def czi_movie_to_synth(czi_fn,
                     depthrange = slice(start_depth,end_depth+1)
                     save_name = f'{channel:02d}_Z{start_depth:05d}-{end_depth:05d}_{base_name}'
                     idx = build_index(proc_axes, {'Z': depthrange, 'C': channel, 'X':slice(0,x),'Y':slice(0,y)})
-                    img_data = data[idx].astype(np.float128).copy()
+                    img_data = data[idx].astype(np.float64).copy()
                     img_max = img_data.max()
                     if img_max != 0: img_data /= img_max
 
@@ -340,15 +340,15 @@ def czi_movie_to_synth(czi_fn,
 
                     for i in range(hr_imgs.shape[0]):
                         hr_img = hr_imgs[i]
-                        crap_img = crappify_func(hr_img).astype(np.float128).copy() if crappify_func else hr_img
-                        lr_img = npzoom(crap_img, 1/scale, order=0).astype(np.float128).copy()
+                        crap_img = crappify_func(hr_img).astype(np.float64).copy() if crappify_func else hr_img
+                        lr_img = npzoom(crap_img, 1/scale, order=0).astype(np.float64).copy()
                         lr_imgs.append(lr_img)
-                        lrup_img = npzoom(lr_img, scale, order=0).astype(np.float128).copy()
+                        lrup_img = npzoom(lr_img, scale, order=0).astype(np.float64).copy()
                         lrup_imgs.append(lrup_img)
 
-                    lr_imgs = np.array(lr_imgs).astype(np.float128).copy()
-                    lrup_imgs = np.array(lrup_imgs).astype(np.float128).copy()
-                    hr_img = hr_imgs[hr_imgs.shape[0]//2].astype(np.float128).copy()
+                    lr_imgs = np.array(lr_imgs).astype(np.float64).copy()
+                    lrup_imgs = np.array(lrup_imgs).astype(np.float64).copy()
+                    hr_img = hr_imgs[hr_imgs.shape[0]//2].astype(np.float64).copy()
                     hr_mz_name, lr_mz_name, lrup_mz_name = [d / save_name for d in [hr_mz_dir, lr_mz_dir, lrup_mz_dir]]
                     np.save(hr_mz_name, hr_img)
                     np.save(lr_mz_name, lr_imgs)
@@ -388,7 +388,7 @@ def tif_movie_to_synth(tif_fn,
                     save_name = f'{channel:02d}_{depth:02d}_{t:06d}_{base_name}'
                     img.seek(depth)
                     img.load()
-                    img_data = np.array(img).astype(np.float128).copy()
+                    img_data = np.array(img).astype(np.float64).copy()
                     img_max = img_data.max()
                     if img_max != 0: img_data /= img_max
 
@@ -412,9 +412,9 @@ def image_to_synth(img_data, dest, mode, hr_dir, lr_dir, lrup_dir, save_name, si
     adjh, adjw = (h//4) * 4, (w//4)*4
     hr_img = img_data[0:adjh, 0:adjw]
 
-    crap_img = crappify_func(hr_img).astype(np.float128).copy() if crappify_func else hr_img
-    lr_img = npzoom(crap_img, 1/scale, order=0).astype(np.float128).copy()
-    lrup_img = npzoom(lr_img, scale, order=0).astype(np.float128).copy()
+    crap_img = crappify_func(hr_img).astype(np.float64).copy() if crappify_func else hr_img
+    lr_img = npzoom(crap_img, 1/scale, order=0).astype(np.float64).copy()
+    lrup_img = npzoom(lr_img, scale, order=0).astype(np.float64).copy()
 
     if single:
         hr_name, lr_name, lrup_name = [d / save_name for d in [hr_dir, lr_dir, lrup_dir]]
@@ -440,8 +440,8 @@ def image_to_synth(img_data, dest, mode, hr_dir, lr_dir, lrup_dir, save_name, si
                     hr_tile_name, lr_tile_name, lrup_tile_name = [d / tile_name for d
                                                                 in [hr_tile_dir, lr_tile_dir, lrup_tile_dir]]
                     crap_tile = draw_tile_bounds(crap_img, bounds=bounds)
-                    lr_tile = npzoom(crap_tile, 1/scale, order=0).astype(np.float128).copy()
-                    lrup_tile = npzoom(lr_tile, scale, order=0).astype(np.float128).copy()
+                    lr_tile = npzoom(crap_tile, 1/scale, order=0).astype(np.float64).copy()
+                    lrup_tile = npzoom(lr_tile, scale, order=0).astype(np.float64).copy()
                     save_img(hr_tile_name, hr_tile)
                     save_img(lr_tile_name, lr_tile)
                     save_img(lrup_tile_name, lrup_tile)

@@ -62,7 +62,7 @@ def process_tif(fn, processor, proc_func, out_fn, baseline_dir, n_depth=1, n_tim
             if img_tif.n_frames == 1:
                 times = n_frame
                 img_tif = np.array(img_tif)
-                data = np.repeat(img_tif[None],5,axis=0).astype(np.float128)
+                data = np.repeat(img_tif[None],5,axis=0).astype(np.float64)
             else:
                 return []
         else:
@@ -72,7 +72,7 @@ def process_tif(fn, processor, proc_func, out_fn, baseline_dir, n_depth=1, n_tim
                 img_tif.seek(i)
                 img_tif.load()
                 img_tifs.append(np.array(img_tif).copy())
-            data = np.stack(img_tifs).astype(np.float128)
+            data = np.stack(img_tifs).astype(np.float64)
 
         data, img_info = img_to_float(data)
         img_tiffs = []
@@ -107,7 +107,7 @@ def process_czi(fn, processor, proc_func, out_fn, baseline_dir, n_depth=1, n_tim
         times = proc_shape['T']
         x, y = proc_shape['X'], proc_shape['Y']
 
-        data = czi_f.asarray().astype(np.float128)
+        data = czi_f.asarray().astype(np.float64)
         data, img_info = img_to_float(data)
 
         if depths < n_depth: return

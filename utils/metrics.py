@@ -101,7 +101,7 @@ def psnr(pred, targs):
 def mse(pred, targs):
     return F.mse_loss(pred, targs)
 
-def normalize(x, pmin=3, pmax=99.8, axis=None, clip=False, eps=1e-20, dtype=np.float128):
+def normalize(x, pmin=3, pmax=99.8, axis=None, clip=False, eps=1e-20, dtype=np.float64):
     """Percentile-based image normalization."""
 
     mi = np.percentile(x,pmin,axis=axis,keepdims=True)
@@ -109,7 +109,7 @@ def normalize(x, pmin=3, pmax=99.8, axis=None, clip=False, eps=1e-20, dtype=np.f
     return normalize_mi_ma(x, mi, ma, clip=clip, eps=eps, dtype=dtype)
 
 
-def normalize_mi_ma(x, mi, ma, clip=False, eps=1e-20, dtype=np.float128):
+def normalize_mi_ma(x, mi, ma, clip=False, eps=1e-20, dtype=np.float64):
     if dtype is not None:
         x   = x.astype(dtype,copy=False)
         mi  = dtype(mi) if np.isscalar(mi) else mi.astype(dtype,copy=False)
@@ -155,9 +155,9 @@ def norm_minmse(gt, x, normalize_gt=True):
 
     """
     if normalize_gt:
-        gt = normalize(gt, 0.1, 99.9, clip=False).astype(np.float128, copy = False)
-    x = x.astype(np.float128, copy=False) - np.mean(x)
-    gt = gt.astype(np.float128, copy=False) - np.mean(gt)
+        gt = normalize(gt, 0.1, 99.9, clip=False).astype(np.float64, copy = False)
+    x = x.astype(np.float64, copy=False) - np.mean(x)
+    gt = gt.astype(np.float64, copy=False) - np.mean(gt)
     scale = np.cov(x.flatten(), gt.flatten())[0, 1] / np.var(x.flatten())
     return gt, scale * x
 

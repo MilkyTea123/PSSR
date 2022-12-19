@@ -228,7 +228,7 @@ def unet_image_from_tiles_partialsave(learn, in_img, tile_sz=(256, 256), scale=(
     assembled *= (ma - mi)
     assembled += mi
 
-    return assembled.astype(np.float128)
+    return assembled.astype(np.float64)
 
 def unet_multi_image_from_tiles(learn, in_img, tile_sz=128, scale=4, wsize=3):
     cur_size = in_img.shape[1:3]
@@ -364,7 +364,7 @@ def unet_image_from_tiles_blend(learn, in_img, use_tiles, tile_sz=256, scale=4, 
     # assembled *= (ma - mi)
     # assembled += mi
 
-    return assembled.astype(np.float128).clip(0.,1.)
+    return assembled.astype(np.float64).clip(0.,1.)
 
 
 def unet_image_from_tiles(learn, in_img, tile_sz=128, scale=4):
@@ -427,7 +427,7 @@ def tif_predict_movie(learn,
 
     for i in range(times):
         im.seek(i)
-        imgs.append(np.array(im).astype(np.float128) / 255.)
+        imgs.append(np.array(im).astype(np.float64) / 255.)
     img_data = np.stack(imgs)
 
     def pull_frame(i):
@@ -486,7 +486,7 @@ def czi_predict_movie(learn,
         #if folder.exists(): shutil.rmtree(folder)
         #folder.mkdir()
 
-        data = czi_f.asarray().astype(np.float128) / 255.
+        data = czi_f.asarray().astype(np.float64) / 255.
         preds = []
         origs = []
 
@@ -567,7 +567,7 @@ def img_to_uint32(img, img_info=None):
 def img_to_float(img):
     dtype = img.dtype
     img_max = max_to_use(img)
-    img = img.astype(np.float128).copy()
+    img = img.astype(np.float64).copy()
     mi, ma = np.percentile(img, [2,99.99])
     img_range = ma - mi
     real_max = img.max()
@@ -796,14 +796,14 @@ def draw_random_tile(img_data, tile_sz, thresh, thresh_pct):
     found_tile = False
     tries = 0
     while not found_tile:
-        tile, (xs,ys) = draw_tile(img_data, tile_sz)
+        tile, (xs,ys) = draw_tile(img_data, tile_sz).astype(np.uint32)
         found_tile = check_tile(tile, thresh, thresh_pct)
         # found_tile = True
         tries += 1
         if tries > (max_tries/2): thresh_pct /= 2
         if tries > max_tries: found_tile = True
     box = [xs.start, ys.start, xs.stop, ys.stop]
-    return PIL.Image.fromarray(tile), box
+    return PIL.Image.fromarray(tile, mode='I'), box
 
 def generate_tiles(dest_dir, tile_info, scale=4, crap_dirs=None, crap_func=None):
     tile_data = []
